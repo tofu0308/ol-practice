@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+import { useEffect, useRef } from 'react';
+import './styles.css';
+import 'ol/ol.css';
+import { Map } from 'ol';
+import { map } from './map';
+export function useMap() {
+  const mapRef = useRef<Map>(map);
+  if (!mapRef.current) {
+    mapRef.current = map;
+  }
+  return mapRef.current;
 }
 
-export default App
+export default function App() {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const map = useMap();
+  useEffect(() => {
+    if (mapRef.current) {
+      map.setTarget(mapRef.current);
+      map.updateSize();
+    }
+  }, [map]);
+  return (
+    <div className="App">
+      <h1>Open Layers React+TS Starter</h1>
+      <div className="map-container">
+        <div id="map" ref={mapRef}></div>
+      </div>
+    </div>
+  );
+}
